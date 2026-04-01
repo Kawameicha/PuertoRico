@@ -1,0 +1,275 @@
+[
+  {
+    "name": "Small Market",
+    "desc": "",
+    "cost": 1,
+    "vict": 1,
+    "game": "reg"
+  },
+  {
+    "name": "Canal",
+    "desc": "",
+    "cost": 1,
+    "vict": 1,
+    "game": "exp"
+  },
+  {
+    "name": "Builder’s Yard",
+    "desc": "",
+    "cost": 2,
+    "vict": 1,
+    "game": "reg"
+  },
+  {
+    "name": "Hacienda",
+    "desc": "",
+    "cost": 2,
+    "vict": 1,
+    "game": "reg"
+  },
+  {
+    "name": "Lumberyard",
+    "desc": "",
+    "cost": 2,
+    "vict": 1,
+    "game": "exp"
+  },
+  {
+    "name": "Hidden Market",
+    "desc": "",
+    "cost": 2,
+    "vict": 1,
+    "game": "exp"
+  },
+  {
+    "name": "Zoning Office",
+    "desc": "",
+    "cost": 2,
+    "vict": 1,
+    "game": "cit"
+  },
+  {
+    "name": "Small Warehouse",
+    "desc": "",
+    "cost": 3,
+    "vict": 1,
+    "game": "reg"
+  },
+  {
+    "name": "Storehouse",
+    "desc": "",
+    "cost": 3,
+    "vict": 1,
+    "game": "exp"
+  },
+  {
+    "name": "Chapel",
+    "desc": "",
+    "cost": 3,
+    "vict": 1,
+    "game": "cit"
+  },
+  {
+    "name": "Hospital",
+    "desc": "",
+    "cost": 4,
+    "vict": 2,
+    "game": "reg"
+  },
+  {
+    "name": "Bohio",
+    "desc": "",
+    "cost": 4,
+    "vict": 2,
+    "game": "exp"
+  },
+  {
+    "name": "Park Authority",
+    "desc": "",
+    "cost": 4,
+    "vict": 2,
+    "game": "cit"
+  },
+  {
+    "name": "Office",
+    "desc": "",
+    "cost": 5,
+    "vict": 2,
+    "game": "reg"
+  },
+  {
+    "name": "Large Market",
+    "desc": "",
+    "cost": 5,
+    "vict": 2,
+    "game": "reg"
+  },
+  {
+    "name": "Merchant Outpost",
+    "desc": "",
+    "cost": 5,
+    "vict": 2,
+    "game": "exp"
+  },
+  {
+    "name": "Church",
+    "desc": "",
+    "cost": 5,
+    "vict": 2,
+    "game": "exp"
+  },
+  {
+    "name": "Notary",
+    "desc": "",
+    "cost": 5,
+    "vict": 2,
+    "game": "cit"
+  },
+  {
+    "name": "Large Warehouse",
+    "desc": "",
+    "cost": 6,
+    "vict": 2,
+    "game": "reg"
+  },
+  {
+    "name": "Small Wharf",
+    "desc": "",
+    "cost": 6,
+    "vict": 2,
+    "game": "exp"
+  },
+  {
+    "name": "Pension Office",
+    "desc": "",
+    "cost": 6,
+    "vict": 2,
+    "game": "cit"
+  },
+  {
+    "name": "Factory",
+    "desc": "",
+    "cost": 7,
+    "vict": 3,
+    "game": "reg"
+  },
+  {
+    "name": "Lighthouse",
+    "desc": "",
+    "cost": 7,
+    "vict": 3,
+    "game": "exp"
+  },
+  {
+    "name": "Villa",
+    "desc": "",
+    "cost": 7,
+    "vict": 3,
+    "game": "cit"
+  },
+  {
+    "name": "School",
+    "desc": "",
+    "cost": 8,
+    "vict": 3,
+    "game": "reg"
+  },
+  {
+    "name": "Harbor",
+    "desc": "",
+    "cost": 8,
+    "vict": 3,
+    "game": "reg"
+  },
+  {
+    "name": "Distillery",
+    "desc": "",
+    "cost": 8,
+    "vict": 3,
+    "game": "exp"
+  },
+  {
+    "name": "Publishing House",
+    "desc": "",
+    "cost": 8,
+    "vict": 3,
+    "game": "exp"
+  },
+  {
+    "name": "Large Tailor Shop",
+    "desc": "",
+    "cost": 8,
+    "vict": 3,
+    "game": "cit"
+  },
+  {
+    "name": "Wharf",
+    "desc": "",
+    "cost": 9,
+    "vict": 3,
+    "game": "reg"
+  },
+  {
+    "name": "Assembly Hall",
+    "desc": "",
+    "cost": 9,
+    "vict": 3,
+    "game": "exp"
+  },
+  {
+    "name": "Fire Station",
+    "desc": "",
+    "cost": 10,
+    "vict": 4,
+    "game": "reg"
+  },
+  {
+    "name": "Residence",
+    "desc": "",
+    "cost": 10,
+    "vict": 4,
+    "game": "reg"
+  },
+  {
+    "name": "Fortress",
+    "desc": "",
+    "cost": 10,
+    "vict": 4,
+    "game": "reg"
+  },
+  {
+    "name": "Customs House",
+    "desc": "",
+    "cost": 10,
+    "vict": 4,
+    "game": "reg"
+  },
+  {
+    "name": "City Hall",
+    "desc": "",
+    "cost": 10,
+    "vict": 4,
+    "game": "reg"
+  },
+  {
+    "name": "Monument",
+    "desc": "",
+    "cost": 10,
+    "vict": 8,
+    "game": "exp"
+  },
+  {
+    "name": "Cathedral",
+    "desc": "",
+    "cost": 10,
+    "vict": 4,
+    "game": "exp"
+  },
+  {
+    "name": "Town Square",
+    "desc": "",
+    "cost": 10,
+    "vict": 4,
+    "game": "cit"
+  },
+]
