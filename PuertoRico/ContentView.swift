@@ -11,6 +11,28 @@ struct ContentView: View {
 
     @State private var viewModel = BuildingViewModel()
 
+    struct iOSCheckboxToggleStyle: ToggleStyle {
+        func makeBody(configuration: Configuration) -> some View {
+
+            Button(action: {
+                configuration.isOn.toggle()
+            }, label: {
+                HStack {
+                    Image(systemName: configuration.isOn ? "checkmark.square" : "square")
+                    configuration.label
+                }
+            })
+        }
+    }
+
+    private func label(for game: GameType) -> String {
+        switch game {
+        case .exp: return "Expanded Buildings"
+        case .cit: return "Citizen Buildings"
+        default: return game.rawValue.capitalized
+        }
+    }
+
     var body: some View {
         VStack(spacing: 20) {
 
@@ -21,27 +43,23 @@ struct ContentView: View {
                 Text("Include:")
                     .font(.headline)
 
-                ForEach(GameType.allCases, id: \.self) { game in
-                    Toggle(game.displayName,
-                           isOn: Binding(
-                            get: { viewModel.selectedGames.contains(game) },
-                            set: { isOn in
-                                if isOn {
-                                    viewModel.selectedGames.insert(game)
-                                } else {
-                                    viewModel.selectedGames.remove(game)
-                                }
-                            }
-                           )
-                    )
+                ForEach([GameType.exp, GameType.cit], id: \.self) { game in
+                    Toggle(label(for: game), isOn: Binding(
+                        get: { viewModel.selectedGames.contains(game) },
+                        set: { isOn in
+                            if isOn { viewModel.selectedGames.insert(game) }
+                            else { viewModel.selectedGames.remove(game) }
+                        }
+                    ))
                 }
             }
+            .toggleStyle(iOSCheckboxToggleStyle())
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             ScrollView {
                 Text(viewModel.outputText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             Button("Redraw") {
                 viewModel.draw()
