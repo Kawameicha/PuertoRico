@@ -39,27 +39,43 @@ struct ContentView: View {
             Text("Drawn Buildings")
                 .font(.title)
 
-            VStack(alignment: .leading) {
-                Text("Include:")
-                    .font(.headline)
+            GroupBox{
+                VStack(alignment: .leading) {
+                    Text("Include:")
+                        .font(.headline)
 
-                ForEach([GameType.exp, GameType.cit], id: \.self) { game in
-                    Toggle(label(for: game), isOn: Binding(
-                        get: { viewModel.selectedGames.contains(game) },
-                        set: { isOn in
-                            if isOn { viewModel.selectedGames.insert(game) }
-                            else { viewModel.selectedGames.remove(game) }
-                        }
-                    ))
+                    ForEach([GameType.exp, GameType.cit], id: \.self) { game in
+                        Toggle(label(for: game), isOn: Binding(
+                            get: { viewModel.selectedGames.contains(game) },
+                            set: { isOn in
+                                if isOn { viewModel.selectedGames.insert(game) }
+                                else { viewModel.selectedGames.remove(game) }
+                            }
+                        ))
+                    }
+
+                    Divider().padding(.vertical, 4)
+                    
+                    Text("Alternative Game Rules:")
+                        .font(.headline)
+
+                    Toggle("Avoid pairing: Villa + Large Tailor Shop", isOn: $viewModel.enforceVillaLargeTailorRule)
+                    Toggle("Avoid pairing: Hacienda + Lumberyard", isOn: $viewModel.enforceHaciendaLumberyardRule)
                 }
+                .toggleStyle(iOSCheckboxToggleStyle())
             }
-            .toggleStyle(iOSCheckboxToggleStyle())
-            .frame(maxWidth: .infinity, alignment: .leading)
 
             ScrollView {
-                Text(viewModel.outputText)
+                VStack(alignment: .leading, spacing: 12) {
+                    if !viewModel.outputMainText.isEmpty {
+                        Text(viewModel.outputMainText)
+                    }
+                    if !viewModel.outputCityText.isEmpty {
+                        Text(viewModel.outputCityText)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
 
             Button("Redraw") {
                 viewModel.draw()
