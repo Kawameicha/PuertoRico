@@ -34,7 +34,7 @@ struct ContentView: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 24) {
 
             Text("Drawn Buildings")
                 .font(.title)
@@ -54,13 +54,16 @@ struct ContentView: View {
                         ))
                     }
 
-                    Divider().padding(.vertical, 4)
-                    
+                    Divider()
+                        .padding(.vertical, 4)
+
                     Text("Alternative Game Rules:")
                         .font(.headline)
 
-                    Toggle("Avoid pairing: Villa + Large Tailor Shop", isOn: $viewModel.enforceVillaLargeTailorRule)
-                    Toggle("Avoid pairing: Hacienda + Lumberyard", isOn: $viewModel.enforceHaciendaLumberyardRule)
+                    Toggle("Avoid Hacienda + Lumberyard", isOn: $viewModel.enforceHaciendaLumberyardRule)
+                    Toggle("Mix Citizen Buildings into draw", isOn: $viewModel.mixCityIntoRandomDraw)
+                    Toggle("Avoid Villa + Large Tailor Shop", isOn: $viewModel.enforceVillaLargeTailorRule)
+                        .padding(.horizontal, 12)
                 }
                 .toggleStyle(iOSCheckboxToggleStyle())
             }

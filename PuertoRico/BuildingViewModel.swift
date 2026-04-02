@@ -7,6 +7,13 @@
 
 import Observation
 
+struct DrawSettings {
+    var selectedGames: Set<GameType>
+    var enforceVillaLargeTailorRule: Bool
+    var enforceHaciendaLumberyardRule: Bool
+    var mixCityIntoRandomDraw: Bool
+}
+
 @Observable
 final class BuildingViewModel {
 
@@ -14,9 +21,20 @@ final class BuildingViewModel {
     private let drawer = BuildingDrawer()
 
     var drawnBuildings: [Building] = []
+
+    // UI state (editable anytime)
     var selectedGames: Set<GameType> = [.reg, .exp, .cit]
     var enforceVillaLargeTailorRule: Bool = false
     var enforceHaciendaLumberyardRule: Bool = false
+    var mixCityIntoRandomDraw: Bool = false
+
+    // Snapshot used for current output
+    private var appliedSettings = DrawSettings(
+        selectedGames: [.reg, .exp, .cit],
+        enforceVillaLargeTailorRule: false,
+        enforceHaciendaLumberyardRule: false,
+        mixCityIntoRandomDraw: false
+    )
 
     init() {
         self.allBuildings = BuildingRepository.loadBuildings()
@@ -24,6 +42,14 @@ final class BuildingViewModel {
     }
 
     func draw() {
+        // Freeze current UI state
+        appliedSettings = DrawSettings(
+            selectedGames: selectedGames,
+            enforceVillaLargeTailorRule: enforceVillaLargeTailorRule,
+            enforceHaciendaLumberyardRule: enforceHaciendaLumberyardRule,
+            mixCityIntoRandomDraw: mixCityIntoRandomDraw
+        )
+
         // We may need to redraw to satisfy pairing rules; cap attempts to prevent infinite loops
         let maxAttempts = 50
         var attempt = 0
@@ -34,21 +60,28 @@ final class BuildingViewModel {
             var randomPool: [Building] = []
             // Always include base game (.reg)
             randomPool += allBuildings.filter { $0.game == .reg }
-            // Include expansion (.exp) only when selected
+            // Include .exp only when selected
             if selectedGames.contains(.exp) {
                 randomPool += allBuildings.filter { $0.game == .exp }
             }
+            // Optionally also include .cit if mixing into random pool
+            if mixCityIntoRandomDraw {
+                randomPool += allBuildings.filter { $0.game == .cit }
+            }
 
-            // Draw randomly from the combined pool of .reg and optional .exp
+            // Draw randomly from the combined pool of .reg and optional .exp and optional .cit
             let randomlyDrawn = drawer.draw(from: randomPool)
 
-            // If .cit is selected, include ALL city buildings without randomization
-            let cityAdditions: [Building] = selectedGames.contains(.cit)
+            // If .cit is selected and not mixing into random pool, include ALL its buildings without randomization
+            let cityAdditions: [Building] = (selectedGames.contains(.cit) && !mixCityIntoRandomDraw)
                 ? allBuildings.filter { $0.game == .cit }
                 : []
 
-            // Combine results
-            let combined = randomlyDrawn + cityAdditions
+            // Combine and sort results
+            let combinedUnsorted = randomlyDrawn + cityAdditions
+            let combined: [Building] = mixCityIntoRandomDraw
+                ? combinedUnsorted.sorted { $0.cost < $1.cost }
+                : combinedUnsorted
 
             // Check pairing rules if enabled
             let names = Set(combined.map { $0.name })
@@ -70,14 +103,19 @@ final class BuildingViewModel {
     }
 
     var outputMainText: String {
-        drawnBuildings
-            .filter { $0.game == .reg || $0.game == .exp }
+        let source: [Building] = appliedSettings.mixCityIntoRandomDraw
+            ? drawnBuildings
+            : drawnBuildings.filter { $0.game == .reg || $0.game == .exp }
+
+        return source
             .map { "\($0.name) [\($0.game.rawValue)] (Cost: \($0.cost), VP: \($0.vict))" }
             .joined(separator: "\n")
     }
 
     var outputCityText: String {
-        drawnBuildings
+        guard !appliedSettings.mixCityIntoRandomDraw else { return "" }
+
+        return drawnBuildings
             .filter { $0.game == .cit }
             .map { "\($0.name) [\($0.game.rawValue)] (Cost: \($0.cost), VP: \($0.vict))" }
             .joined(separator: "\n")
