@@ -61,9 +61,24 @@ struct ContentView: View {
                         .font(.headline)
 
                     Toggle("Swap School and Factory costs", isOn: $viewModel.swapSchoolFactoryCosts)
+
+                    // Avoid Hacienda + Lumberyard (only when .exp is selected)
+                    let haciendaEnabled = viewModel.selectedGames.contains(.exp)
                     Toggle("Avoid Hacienda + Lumberyard", isOn: $viewModel.enforceHaciendaLumberyardRule)
+                        .disabled(!haciendaEnabled)
+                        .opacity(haciendaEnabled ? 1.0 : 0.5)
+
+                    // Mix Citizen Buildings into draw (only when .cit is selected)
+                    let mixEnabled = viewModel.selectedGames.contains(.cit)
                     Toggle("Mix Citizen Buildings into draw", isOn: $viewModel.mixCityIntoRandomDraw)
+                        .disabled(!mixEnabled)
+                        .opacity(mixEnabled ? 1.0 : 0.5)
+
+                    // Avoid Villa + Large Tailor Shop (only when Mix is enabled)
+                    let villaEnabled = viewModel.mixCityIntoRandomDraw
                     Toggle("Avoid Villa + Large Tailor Shop", isOn: $viewModel.enforceVillaLargeTailorRule)
+                        .disabled(!villaEnabled)
+                        .opacity(villaEnabled ? 1.0 : 0.5)
                         .padding(.horizontal, 12)
                 }
                 .toggleStyle(iOSCheckboxToggleStyle())
