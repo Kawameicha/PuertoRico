@@ -60,6 +60,7 @@ struct ContentView: View {
                     Text("Alternative Game Rules:")
                         .font(.headline)
 
+                    Toggle("Swap School and Factory costs", isOn: $viewModel.swapSchoolFactoryCosts)
                     Toggle("Avoid Hacienda + Lumberyard", isOn: $viewModel.enforceHaciendaLumberyardRule)
                     Toggle("Mix Citizen Buildings into draw", isOn: $viewModel.mixCityIntoRandomDraw)
                     Toggle("Avoid Villa + Large Tailor Shop", isOn: $viewModel.enforceVillaLargeTailorRule)

@@ -29,3 +29,15 @@ enum GameType: String, CaseIterable, Codable {
         }
     }
 }
+
+extension Building {
+    func with(cost: Int? = nil) -> Building {
+        Building(
+            name: name,
+            desc: desc,
+            cost: cost ?? self.cost,
+            vict: vict,
+            game: game
+        )
+    }
+}

@@ -12,6 +12,7 @@ struct DrawSettings {
     var enforceVillaLargeTailorRule: Bool
     var enforceHaciendaLumberyardRule: Bool
     var mixCityIntoRandomDraw: Bool
+    var swapSchoolFactoryCosts: Bool
 }
 
 @Observable
@@ -27,13 +28,15 @@ final class BuildingViewModel {
     var enforceVillaLargeTailorRule: Bool = false
     var enforceHaciendaLumberyardRule: Bool = false
     var mixCityIntoRandomDraw: Bool = false
+    var swapSchoolFactoryCosts: Bool = false
 
     // Snapshot used for current output
     private var appliedSettings = DrawSettings(
         selectedGames: [.reg, .exp, .cit],
         enforceVillaLargeTailorRule: false,
         enforceHaciendaLumberyardRule: false,
-        mixCityIntoRandomDraw: false
+        mixCityIntoRandomDraw: false,
+        swapSchoolFactoryCosts: false
     )
 
     init() {
@@ -47,7 +50,8 @@ final class BuildingViewModel {
             selectedGames: selectedGames,
             enforceVillaLargeTailorRule: enforceVillaLargeTailorRule,
             enforceHaciendaLumberyardRule: enforceHaciendaLumberyardRule,
-            mixCityIntoRandomDraw: mixCityIntoRandomDraw
+            mixCityIntoRandomDraw: mixCityIntoRandomDraw,
+            swapSchoolFactoryCosts: swapSchoolFactoryCosts
         )
 
         // We may need to redraw to satisfy pairing rules; cap attempts to prevent infinite loops
@@ -69,8 +73,25 @@ final class BuildingViewModel {
                 randomPool += allBuildings.filter { $0.game == .cit }
             }
 
+            // Optionally swap costs for School and Factory for alternative rule
+            let adjustedRandom: [Building]
+            if swapSchoolFactoryCosts {
+                adjustedRandom = randomPool.map {
+                    switch $0.name {
+                    case "School":
+                        return $0.with(cost: 7)
+                    case "Factory":
+                        return $0.with(cost: 8)
+                    default:
+                        return $0
+                    }
+                }
+            } else {
+                adjustedRandom = randomPool
+            }
+
             // Draw randomly from the combined pool of .reg and optional .exp and optional .cit
-            let randomlyDrawn = drawer.draw(from: randomPool)
+            let randomlyDrawn = drawer.draw(from: adjustedRandom)
 
             // If .cit is selected and not mixing into random pool, include ALL its buildings without randomization
             let cityAdditions: [Building] = (selectedGames.contains(.cit) && !mixCityIntoRandomDraw)
@@ -79,9 +100,9 @@ final class BuildingViewModel {
 
             // Combine and sort results
             let combinedUnsorted = randomlyDrawn + cityAdditions
-            let combined: [Building] = mixCityIntoRandomDraw
-                ? combinedUnsorted.sorted { $0.cost < $1.cost }
-                : combinedUnsorted
+            let combined = combinedUnsorted.sorted {
+                ($0.cost, $0.name) < ($1.cost, $1.name)
+            }
 
             // Check pairing rules if enabled
             let names = Set(combined.map { $0.name })
