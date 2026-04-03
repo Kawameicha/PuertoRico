@@ -85,12 +85,41 @@ struct ContentView: View {
             }
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
-                    if !viewModel.outputMainText.isEmpty {
-                        Text(viewModel.outputMainText)
+                VStack(alignment: .leading, spacing: 0) {
+                    if !viewModel.mainDisplayRows.isEmpty {
+                        ForEach(viewModel.mainDisplayRows) { row in
+                            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                                Text(row.text)
+                                if let icon = row.iconName {
+                                    Image(icon)
+                                        .renderingMode(.template)
+                                        .resizable()
+                                        .frame(width: 15, height: 15)
+                                        .foregroundStyle(Color.primary)
+                                        .aspectRatio(contentMode: .fit)
+                                        .offset(y: 2)
+                                }
+                            }
+                        }
                     }
-                    if !viewModel.outputCityText.isEmpty {
-                        Text(viewModel.outputCityText)
+
+                    Spacer()
+
+                    if !viewModel.cityDisplayRows.isEmpty {
+                        ForEach(viewModel.cityDisplayRows) { row in
+                            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                                Text(row.text)
+                                if let icon = row.iconName {
+                                    Image(icon)
+                                        .renderingMode(.template)
+                                        .resizable()
+                                        .frame(width: 15, height: 15)
+                                        .foregroundStyle(Color.primary)
+                                        .aspectRatio(contentMode: .fit)
+                                        .offset(y: 2)
+                                }
+                            }
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -5,6 +5,7 @@
 //  Created by Christoph Freier on 30.03.26.
 //
 
+import Foundation
 import Observation
 
 struct DrawSettings {
@@ -13,6 +14,12 @@ struct DrawSettings {
     var enforceHaciendaLumberyardRule: Bool
     var mixCityIntoRandomDraw: Bool
     var swapSchoolFactoryCosts: Bool
+}
+
+struct BuildingDisplayRow: Identifiable {
+    let id = UUID()
+    let iconName: String?
+    let text: String
 }
 
 @Observable
@@ -123,6 +130,14 @@ final class BuildingViewModel {
         }
     }
 
+    private func iconName(for game: GameType) -> String? {
+        switch game {
+        case .exp: return "exp"
+        case .cit: return "cit"
+        case .reg: return nil
+        }
+    }
+
     var outputMainText: String {
         let source: [Building] = appliedSettings.mixCityIntoRandomDraw
             ? drawnBuildings
@@ -140,5 +155,29 @@ final class BuildingViewModel {
             .filter { $0.game == .cit }
             .map { "\($0.name) [\($0.game.rawValue)] (Cost: \($0.cost), VP: \($0.vict))" }
             .joined(separator: "\n")
+    }
+
+    var mainDisplayRows: [BuildingDisplayRow] {
+        let source: [Building] = appliedSettings.mixCityIntoRandomDraw
+            ? drawnBuildings
+            : drawnBuildings.filter { $0.game == .reg || $0.game == .exp }
+        return source.map { b in
+            BuildingDisplayRow(
+                iconName: iconName(for: b.game),
+                text: "\(b.name) (Cost: \(b.cost), VP: \(b.vict))"
+            )
+        }
+    }
+
+    var cityDisplayRows: [BuildingDisplayRow] {
+        guard !appliedSettings.mixCityIntoRandomDraw else { return [] }
+        return drawnBuildings
+            .filter { $0.game == .cit }
+            .map { b in
+                BuildingDisplayRow(
+                    iconName: iconName(for: b.game),
+                    text: "\(b.name) (Cost: \(b.cost), VP: \(b.vict))"
+                )
+            }
     }
 }
