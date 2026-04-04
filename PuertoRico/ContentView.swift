@@ -85,44 +85,120 @@ struct ContentView: View {
             }
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    if !viewModel.mainDisplayRows.isEmpty {
-                        ForEach(viewModel.mainDisplayRows) { row in
-                            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                                Text(row.text)
-                                if let icon = row.iconName {
-                                    Image(icon)
-                                        .renderingMode(.template)
-                                        .resizable()
-                                        .frame(width: 15, height: 15)
-                                        .foregroundStyle(Color.primary)
-                                        .aspectRatio(contentMode: .fit)
-                                        .offset(y: 2)
-                                }
+                var flatRows: [FlatRow] {
+                    var rows: [FlatRow] = []
+
+                    for section in viewModel.mainGroupedSections {
+                        var isFirstVP = true
+
+                        for group in section.costGroups {
+                            var isFirstCost = true
+
+                            for row in group.rows {
+                                rows.append(
+                                    FlatRow(
+                                        vp: isFirstVP ? section.vp : nil,
+                                        cost: isFirstCost ? group.cost : nil,
+                                        name: row.text,
+                                        iconName: row.iconName
+                                    )
+                                )
+                                isFirstVP = false
+                                isFirstCost = false
                             }
                         }
                     }
+                    return rows
+                }
 
-                    Spacer()
+                VStack(alignment: .leading, spacing: 4) {
+                    ForEach(flatRows) { row in
+                        HStack(alignment: .firstTextBaseline) {
 
-                    if !viewModel.cityDisplayRows.isEmpty {
-                        ForEach(viewModel.cityDisplayRows) { row in
-                            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                                Text(row.text)
+                            Text(row.vp.map { "VP \($0)" } ?? "")
+                                .frame(width: 60, alignment: .leading)
+
+                            Text(row.cost.map { "Cost \($0)" } ?? "")
+                                .frame(width: 60, alignment: .leading)
+
+                            HStack(spacing: 4) {
+                                Text(row.name)
+
                                 if let icon = row.iconName {
                                     Image(icon)
                                         .renderingMode(.template)
                                         .resizable()
                                         .frame(width: 15, height: 15)
-                                        .foregroundStyle(Color.primary)
+                                        .foregroundStyle(.primary)
                                         .aspectRatio(contentMode: .fit)
-                                        .offset(y: 2)
+                                        .offset(y: 0.5)
                                 }
+                            }
+
+                            Spacer()
+                        }
+                    }
+
+                    if !viewModel.cityDisplayRows.isEmpty {
+                        Spacer()
+
+                        Text("Additional Citizen Buildings")
+                            .font(.headline)
+
+                        var flatRowsCit: [FlatRow] {
+                            var rows: [FlatRow] = []
+
+                            for section in viewModel.cityGroupedSections {
+                                var isFirstVP = true
+
+                                for group in section.costGroups {
+                                    var isFirstCost = true
+
+                                    for row in group.rows {
+                                        rows.append(
+                                            FlatRow(
+                                                vp: isFirstVP ? section.vp : nil,
+                                                cost: isFirstCost ? group.cost : nil,
+                                                name: row.text,
+                                                iconName: row.iconName
+                                            )
+                                        )
+                                        isFirstVP = false
+                                        isFirstCost = false
+                                    }
+                                }
+                            }
+                            return rows
+                        }
+
+                        ForEach(flatRowsCit) { row in
+                            HStack(alignment: .firstTextBaseline) {
+
+                                Text(row.vp.map { "VP \($0)" } ?? "")
+                                    .frame(width: 60, alignment: .leading)
+
+                                Text(row.cost.map { "Cost \($0)" } ?? "")
+                                    .frame(width: 60, alignment: .leading)
+
+                                HStack(spacing: 4) {
+                                    Text(row.name)
+
+                                    if let icon = row.iconName {
+                                        Image(icon)
+                                            .renderingMode(.template)
+                                            .resizable()
+                                            .frame(width: 15, height: 15)
+                                            .foregroundStyle(.primary)
+                                            .aspectRatio(contentMode: .fit)
+                                            .offset(y: 0.5)
+                                    }
+                                }
+
+                                Spacer()
                             }
                         }
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
 
             Button("Redraw") {

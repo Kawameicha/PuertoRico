@@ -20,6 +20,28 @@ struct BuildingDisplayRow: Identifiable {
     let id = UUID()
     let iconName: String?
     let text: String
+    let cost: Int
+    let vict: Int
+}
+
+struct CostGroup: Identifiable {
+    let id = UUID()
+    let cost: Int
+    let rows: [BuildingDisplayRow]
+}
+
+struct VPSection: Identifiable {
+    let id = UUID()
+    let vp: Int
+    let costGroups: [CostGroup]
+}
+
+struct FlatRow: Identifiable {
+    let id = UUID()
+    let vp: Int?
+    let cost: Int?
+    let name: String
+    let iconName: String?
 }
 
 @Observable
@@ -164,9 +186,38 @@ final class BuildingViewModel {
         return source.map { b in
             BuildingDisplayRow(
                 iconName: iconName(for: b.game),
-                text: "\(b.name) (Cost: \(b.cost), VP: \(b.vict))"
+                text: "\(b.name)",
+                cost: b.cost,
+                vict: b.vict
             )
         }
+    }
+
+    var mainGroupedSections: [VPSection] {
+        // Group available rows by cost
+        let rowsByCost = Dictionary(grouping: mainDisplayRows, by: { $0.cost })
+
+        // Build cost groups in the order of drawRules (respecting limits)
+        let costGroups: [CostGroup] = drawRules.compactMap { rule in
+            guard let rows = rowsByCost[rule.cost], !rows.isEmpty else { return nil }
+            let picked = Array(rows.prefix(rule.numberOfBuildings))
+            return CostGroup(cost: rule.cost, rows: picked)
+        }
+
+        // Group those cost groups by victory points from the rows' vict
+        let groupsByVP = Dictionary(grouping: costGroups, by: { group in
+            group.rows.first?.vict ?? 0
+        })
+
+        // Map into sections sorted by VP ascending, with costs ascending inside
+        return groupsByVP
+            .map { vp, groups in
+                VPSection(
+                    vp: vp,
+                    costGroups: groups.sorted(by: { $0.cost < $1.cost })
+                )
+            }
+            .sorted(by: { $0.vp < $1.vp })
     }
 
     var cityDisplayRows: [BuildingDisplayRow] {
@@ -176,8 +227,37 @@ final class BuildingViewModel {
             .map { b in
                 BuildingDisplayRow(
                     iconName: iconName(for: b.game),
-                    text: "\(b.name) (Cost: \(b.cost), VP: \(b.vict))"
+                    text: "\(b.name)",
+                    cost: b.cost,
+                    vict: b.vict
                 )
             }
+    }
+
+    var cityGroupedSections: [VPSection] {
+        // Group available rows by cost
+        let rowsByCost = Dictionary(grouping: cityDisplayRows, by: { $0.cost })
+
+        // Build cost groups in the order of drawRules (respecting limits)
+        let costGroups: [CostGroup] = drawRules.compactMap { rule in
+            guard let rows = rowsByCost[rule.cost], !rows.isEmpty else { return nil }
+            let picked = Array(rows.prefix(rule.numberOfBuildings))
+            return CostGroup(cost: rule.cost, rows: picked)
+        }
+
+        // Group those cost groups by victory points from the rows' vict
+        let groupsByVP = Dictionary(grouping: costGroups, by: { group in
+            group.rows.first?.vict ?? 0
+        })
+
+        // Map into sections sorted by VP ascending, with costs ascending inside
+        return groupsByVP
+            .map { vp, groups in
+                VPSection(
+                    vp: vp,
+                    costGroups: groups.sorted(by: { $0.cost < $1.cost })
+                )
+            }
+            .sorted(by: { $0.vp < $1.vp })
     }
 }
