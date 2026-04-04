@@ -1,15 +1,15 @@
 //
-//  FlattenRows.swift
+//  FlattenSections.swift
 //  PuertoRico
 //
 //  Created by Christoph Freier on 04.04.26.
 //
 
-
 import Foundation
 import Observation
 
 func flattenSections(_ sections: [VPSection]) -> [FlatRow] {
+
     var rows: [FlatRow] = []
 
     for section in sections {

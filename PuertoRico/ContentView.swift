@@ -11,20 +11,6 @@ struct ContentView: View {
 
     @State private var viewModel = BuildingViewModel()
 
-    struct iOSCheckboxToggleStyle: ToggleStyle {
-        func makeBody(configuration: Configuration) -> some View {
-
-            Button(action: {
-                configuration.isOn.toggle()
-            }, label: {
-                HStack {
-                    Image(systemName: configuration.isOn ? "checkmark.square" : "square")
-                    configuration.label
-                }
-            })
-        }
-    }
-
     private func label(for game: GameType) -> String {
         switch game {
         case .exp: return "Expanded Buildings"
@@ -85,117 +71,19 @@ struct ContentView: View {
             }
 
             ScrollView {
-                var flatRows: [FlatRow] {
-                    var rows: [FlatRow] = []
-
-                    for section in viewModel.mainGroupedSections {
-                        var isFirstVP = true
-
-                        for group in section.costGroups {
-                            var isFirstCost = true
-
-                            for row in group.rows {
-                                rows.append(
-                                    FlatRow(
-                                        vp: isFirstVP ? section.vp : nil,
-                                        cost: isFirstCost ? group.cost : nil,
-                                        name: row.text,
-                                        iconName: row.iconName
-                                    )
-                                )
-                                isFirstVP = false
-                                isFirstCost = false
-                            }
-                        }
-                    }
-                    return rows
-                }
-
                 VStack(alignment: .leading, spacing: 4) {
-                    ForEach(flatRows) { row in
-                        HStack(alignment: .firstTextBaseline) {
-
-                            Text(row.vp.map { "VP \($0)" } ?? "")
-                                .frame(width: 60, alignment: .leading)
-
-                            Text(row.cost.map { "Cost \($0)" } ?? "")
-                                .frame(width: 60, alignment: .leading)
-
-                            HStack(spacing: 4) {
-                                Text(row.name)
-
-                                if let icon = row.iconName {
-                                    Image(icon)
-                                        .renderingMode(.template)
-                                        .resizable()
-                                        .frame(width: 15, height: 15)
-                                        .foregroundStyle(.primary)
-                                        .aspectRatio(contentMode: .fit)
-                                        .offset(y: 0.5)
-                                }
-                            }
-
-                            Spacer()
-                        }
+                    ForEach(viewModel.mainFlatRows) { row in
+                        BuildingRowView(row: row)
                     }
 
-                    if !viewModel.cityDisplayRows.isEmpty {
+                    if !viewModel.cityFlatRows.isEmpty {
                         Spacer()
 
                         Text("Additional Citizen Buildings")
                             .font(.headline)
 
-                        var flatRowsCit: [FlatRow] {
-                            var rows: [FlatRow] = []
-
-                            for section in viewModel.cityGroupedSections {
-                                var isFirstVP = true
-
-                                for group in section.costGroups {
-                                    var isFirstCost = true
-
-                                    for row in group.rows {
-                                        rows.append(
-                                            FlatRow(
-                                                vp: isFirstVP ? section.vp : nil,
-                                                cost: isFirstCost ? group.cost : nil,
-                                                name: row.text,
-                                                iconName: row.iconName
-                                            )
-                                        )
-                                        isFirstVP = false
-                                        isFirstCost = false
-                                    }
-                                }
-                            }
-                            return rows
-                        }
-
-                        ForEach(flatRowsCit) { row in
-                            HStack(alignment: .firstTextBaseline) {
-
-                                Text(row.vp.map { "VP \($0)" } ?? "")
-                                    .frame(width: 60, alignment: .leading)
-
-                                Text(row.cost.map { "Cost \($0)" } ?? "")
-                                    .frame(width: 60, alignment: .leading)
-
-                                HStack(spacing: 4) {
-                                    Text(row.name)
-
-                                    if let icon = row.iconName {
-                                        Image(icon)
-                                            .renderingMode(.template)
-                                            .resizable()
-                                            .frame(width: 15, height: 15)
-                                            .foregroundStyle(.primary)
-                                            .aspectRatio(contentMode: .fit)
-                                            .offset(y: 0.5)
-                                    }
-                                }
-
-                                Spacer()
-                            }
+                        ForEach(viewModel.cityFlatRows) { row in
+                            BuildingRowView(row: row)
                         }
                     }
                 }

@@ -41,3 +41,39 @@ extension Building {
         )
     }
 }
+
+struct DrawSettings {
+    var selectedGames: Set<GameType>
+    var enforceVillaLargeTailorRule: Bool
+    var enforceHaciendaLumberyardRule: Bool
+    var mixCityIntoRandomDraw: Bool
+    var swapSchoolFactoryCosts: Bool
+}
+
+struct BuildingDisplayRow: Identifiable {
+    let id = UUID()
+    let iconName: String?
+    let text: String
+    let cost: Int
+    let vict: Int
+}
+
+struct CostGroup: Identifiable {
+    let id = UUID()
+    let cost: Int
+    let rows: [BuildingDisplayRow]
+}
+
+struct VPSection: Identifiable {
+    let id = UUID()
+    let vp: Int
+    let costGroups: [CostGroup]
+}
+
+struct FlatRow: Identifiable {
+    let id = UUID()
+    let vp: Int?
+    let cost: Int?
+    let name: String
+    let iconName: String?
+}
