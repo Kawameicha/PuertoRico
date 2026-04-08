@@ -53,12 +53,22 @@ struct ContentView: View {
                     Toggle("Avoid Hacienda + Lumberyard", isOn: $viewModel.enforceHaciendaLumberyardRule)
                         .disabled(!haciendaEnabled)
                         .opacity(haciendaEnabled ? 1.0 : 0.5)
+                        .onChange(of: haciendaEnabled) {
+                            if !haciendaEnabled {
+                                viewModel.enforceHaciendaLumberyardRule = false
+                            }
+                        }
 
                     // Mix Citizen Buildings into draw (only when .cit is selected)
                     let mixEnabled = viewModel.selectedGames.contains(.cit)
                     Toggle("Mix Citizen Buildings into draw", isOn: $viewModel.mixCityIntoRandomDraw)
                         .disabled(!mixEnabled)
                         .opacity(mixEnabled ? 1.0 : 0.5)
+                        .onChange(of: mixEnabled) {
+                            if !mixEnabled {
+                                viewModel.mixCityIntoRandomDraw = false
+                            }
+                        }
 
                     // Avoid Villa + Large Tailor Shop (only when Mix is enabled)
                     let villaEnabled = viewModel.mixCityIntoRandomDraw
@@ -66,6 +76,11 @@ struct ContentView: View {
                         .disabled(!villaEnabled)
                         .opacity(villaEnabled ? 1.0 : 0.5)
                         .padding(.horizontal, 12)
+                        .onChange(of: villaEnabled) {
+                            if !villaEnabled {
+                                viewModel.enforceVillaLargeTailorRule = false
+                            }
+                        }
                 }
                 .toggleStyle(iOSCheckboxToggleStyle())
             }
